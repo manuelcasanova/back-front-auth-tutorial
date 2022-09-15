@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3500;
 connectDB();
 
 //Custom middleware (logger)
-app.use(logger);
+//app.use(logger);
 
 //Handle options credentials check (BEFORE CORS) and fetch cookies credientials requirement.
 app.use(credentials)
