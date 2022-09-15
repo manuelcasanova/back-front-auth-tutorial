@@ -234,3 +234,4 @@
 20220915	12:00:53	6974cdd5-ab07-449f-9cd8-72c44426c8da	GET	undefined	/users
 20220915	12:01:02	a4ecf557-29dc-4b47-9c1f-6ce432f65897	DELETE	undefined	/users
 20220915	12:01:36	3deede98-9199-4369-bd37-de87b40208c2	DELETE	undefined	/users
+20220915	13:00:49	2d6f23b9-55a9-49ae-aff0-0cdd7b452400	GET	undefined	/users
