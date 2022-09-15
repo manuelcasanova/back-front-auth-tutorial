@@ -39,7 +39,7 @@ const handleLogin = async (req, res) => {
     //http cookie not accesible by js (for security. More secure than localstorage or another cookie)
     //remove secure: true temporarily if want to test with tunder client. Back in for production
     res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "None", 
-    // secure: true, 
+    secure: true, 
     maxAge: 24 * 60 * 60 * 1000 })
     res.json({ accessToken });
     // res.json({'success': `user ${user} is logged in`});
