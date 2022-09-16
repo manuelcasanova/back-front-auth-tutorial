@@ -13,7 +13,7 @@ const handleLogin = async (req, res) => {
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (match) {
     //Grab the roles
-    const roles = Object.values(foundUser.roles)
+    const roles = Object.values(foundUser.roles).filter(Boolean);
     //Create JWTs Token. To send to use with the other routes that we want protected in our API.
     const accessToken = jwt.sign(
       {
@@ -41,7 +41,7 @@ const handleLogin = async (req, res) => {
     res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "None", 
     secure: true, 
     maxAge: 24 * 60 * 60 * 1000 })
-    res.json({ accessToken });
+    res.json({ roles, accessToken });
     // res.json({'success': `user ${user} is logged in`});
   } else {
     res.sendStatus(401);
