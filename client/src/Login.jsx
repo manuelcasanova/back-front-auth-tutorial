@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect, useContext, useNavigate } from 'react';
-import AuthContext from './context/AuthProvider';
+import { useRef, useState, useEffect } from 'react';
+import useAuth from './hooks/useAuth';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import axios from './api/axios';
 const LOGIN_URL = '/auth';
@@ -8,8 +9,13 @@ export default function Login() {
 
   // const navigate = useNavigate();
   //We created a global state for useContext for our App and here we pull in what we need for our login component.
-  const { setAuth } = useContext(AuthContext)
+  const { setAuth } = useAuth
   //Now, if we successfully authenticate when we log in we will set our new Auth state and store it in the global context.
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  //Get where the user came from or redirect to /
+  const from = location.state?.from?.pathname || "/";
 
   //useRef references. Set the focus on the user input when the component loads.
   //If error we set the focus on it so it can be readed by a screen reader fo accesibility
@@ -20,7 +26,7 @@ export default function Login() {
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
-  const [success, setSuccess] = useState(false);
+  // const [success, setSuccess] = useState(false);
 
   //Use effect hook. Set the focus when the component loads.
   useEffect(() => {
@@ -55,7 +61,9 @@ export default function Login() {
       setAuth({ user, pwd, roles, accessToken });
       setUser('');
       setPwd('');
-      setSuccess(true);
+      // setSuccess(true);
+      //Replace the success page with:
+      navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -72,54 +80,54 @@ export default function Login() {
   }
 
   return (
-    <div className="app-registration">
-      {success ? (
-        <section>
-          <h1>You are logged in!</h1>
-          <br />
-          <p>
-            <a href="#">Go to Home</a>
-          </p>
-        </section>
-      ) : (
-        <section>
-          {/* Holds the error if exists. Offscreen is different from display:none, which would remove it from the document. Assertive: When we focus in this element, it will be announced with the screen reader */}
-          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-          <h1>Sign In</h1>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              ref={userRef}
-              autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-              required
-            />
+    // <div className="app-registration">
+    //   {success ? (
+    //     <section>
+    //       <h1>You are logged in!</h1>
+    //       <br />
+    //       <p>
+    //         <a href="/">Go to Home</a>
+    //       </p>
+    //     </section>
+    //   ) : (
+    <section>
+      {/* Holds the error if exists. Offscreen is different from display:none, which would remove it from the document. Assertive: When we focus in this element, it will be announced with the screen reader */}
+      <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+      <h1>Sign In</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          ref={userRef}
+          autoComplete="off"
+          onChange={(e) => setUser(e.target.value)}
+          value={user}
+          required
+        />
 
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
-              required
-            />
-            <button>Sign In</button>
-          </form>
-          <p>
-            Need an Account?<br />
-            <span className="line">
-              <a href="/register">Sign Up</a>
-            </span>
-          </p>
-        </section>
-
-      )
-      }
-
-    </div>
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          onChange={(e) => setPwd(e.target.value)}
+          value={pwd}
+          required
+        />
+        <button>Sign In</button>
+      </form>
+      <p>
+        Need an Account?<br />
+        <span className="line">
+          <a href="/register">Sign Up</a>
+        </span>
+      </p>
+    </section>
 
   )
+  // }
+
+  // </div>
+
+  //   )
 }
