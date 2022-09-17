@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import useLocalStorage from '../hooks/useLocalStorage';
 import useInput from '../hooks/useInput';
+import useToggle from '../hooks/useToggle';
 
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
@@ -11,7 +11,7 @@ export default function Login() {
 
   // const navigate = useNavigate();
   //We created a global state for useContext for our App and here we pull in what we need for our login component.
-  const { setAuth, persist, setPersist } = useAuth()
+  const { setAuth } = useAuth()
   //Now, if we successfully authenticate when we log in we will set our new Auth state and store it in the global context.
 
   const navigate = useNavigate();
@@ -29,6 +29,8 @@ export default function Login() {
   //const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
+  //If we haven't store a value under the key of persist in localstorage we will start with false, so it won't be checked.
+  const [check, toggleCheck] = useToggle('persist', false);
   // const [success, setSuccess] = useState(false);
 
   //Use effect hook. Set the focus when the component loads.
@@ -83,13 +85,13 @@ export default function Login() {
 
   }
 
-  const togglePersist = () => {
-    setPersist(prev => !prev);
-  }
+  // const togglePersist = () => {
+  //   setPersist(prev => !prev);
+  // }
 
-  useEffect(() => {
-    localStorage.setItem("persist", persist);
-  }, [persist])
+  // useEffect(() => {
+  //   localStorage.setItem("persist", persist);
+  // }, [persist])
 
   return (
     // <div className="app-registration">
@@ -136,8 +138,8 @@ export default function Login() {
           <input
             type="checkbox"
             id="persist"
-            onChange={togglePersist}
-            checked={persist}
+            onChange={toggleCheck}
+            checked={check}
           />
           <label htmlFor="persist">Trust this device</label>
         </div>
