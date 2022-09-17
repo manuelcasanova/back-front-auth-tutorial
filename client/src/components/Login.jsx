@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useLocalStorage from '../hooks/useLocalStorage';
+import useInput from '../hooks/useInput';
 
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
@@ -24,7 +25,8 @@ export default function Login() {
   const errRef = useRef();
 
   //States
-  const [user, setUser] = useLocalStorage('user', '')//useState('');
+   const [user, resetUser, userAttribs] = useInput('user', '')//useState('');
+  //const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
   // const [success, setSuccess] = useState(false);
@@ -60,7 +62,8 @@ export default function Login() {
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
       setAuth({ user, pwd, roles, accessToken });
-      setUser('');
+      //  setUser('');
+      resetUser();
       setPwd('');
       // setSuccess(true);
       //Replace the success page with:
@@ -110,8 +113,13 @@ export default function Login() {
           id="username"
           ref={userRef}
           autoComplete="off"
-          onChange={(e) => setUser(e.target.value)}
-          value={user}
+          // onChange={(e) => 
+          //   setUser(e.target.value
+          //     )}
+          // value={user}
+
+          //Applies the value and the onChange
+          {...userAttribs}
           required
         />
 
