@@ -9,7 +9,7 @@ export default function Login() {
 
   // const navigate = useNavigate();
   //We created a global state for useContext for our App and here we pull in what we need for our login component.
-  const { setAuth } = useAuth()
+  const { setAuth, persist, setPersist } = useAuth()
   //Now, if we successfully authenticate when we log in we will set our new Auth state and store it in the global context.
 
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ export default function Login() {
           withCredentials: true
         }
       );
-       console.log(JSON.stringify(response?.data));
+      console.log(JSON.stringify(response?.data));
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
@@ -78,6 +78,14 @@ export default function Login() {
     }
 
   }
+
+  const togglePersist = () => {
+    setPersist(prev => !prev);
+  }
+
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist])
 
   return (
     // <div className="app-registration">
@@ -115,6 +123,15 @@ export default function Login() {
           required
         />
         <button>Sign In</button>
+        <div className="persistCheck">
+          <input
+            type="checkbox"
+            id="persist"
+            onChange={togglePersist}
+            checked={persist}
+          />
+          <label htmlFor="persist">Trust this device</label>
+        </div>
       </form>
       <p>
         Need an Account?<br />
