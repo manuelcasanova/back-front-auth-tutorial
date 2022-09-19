@@ -21,8 +21,9 @@ export default function Users() {
         const response = await axiosPrivate.get('/users', {
           signl: controller.signal
         });
-        console.log(response.data);
-        isMounted && setUsers(response.data);
+        const userNames = response.data.map(user => user.username)
+        //console.log(response.data);
+        isMounted && setUsers(userNames);
       } catch (err) {
         console.error(err)
         navigate('/login', { state: { from: location }, replace: true})
@@ -43,7 +44,7 @@ export default function Users() {
       {users?.length
         ? (
           <ul>
-            {users.map((user, i) => <li key={i}>{user?.username}</li>)}
+            {users.map((user, i) => <li key={i}>{user}</li>)}
           </ul>
         ) : <p>No users to display</p>}
         {/* <button onClick={() => refresh()}>Refresh</button>
