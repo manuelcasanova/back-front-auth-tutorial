@@ -29,7 +29,7 @@ const handleRefreshToken = async (req, res) => {
         { expiresIn: '10s' } //longer in production
       );
       res.json({ roles, accessToken })
-    }
+      }
   )
 
 }
