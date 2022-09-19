@@ -27,6 +27,10 @@ const handleRefreshToken = async (req, res) => {
     return res.sendStatus(403); //403 Forbidden
   }
 
+  const newRefreshTokenArray = foundUser.refreshToken.filter(rt => rt !== refreshToken);
+
+  
+
   //evaluate jwt
   jwt.verify(
     refreshToken,
