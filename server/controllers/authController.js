@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const handleLogin = async (req, res) => {
+  const cookies = req.cookies;
   const { user, pwd } = req.body;
   if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
 
@@ -25,22 +26,33 @@ const handleLogin = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '10m' } //In production, a few minutes.
     );
-    const refreshToken = jwt.sign(
+    const newRefreshToken = jwt.sign(
       { "username": foundUser.username },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '1d' }
     );
+
+
+    const newRefreshTokenArray =
+      !cookies?.jwt
+      ? foundUser.refreshToken
+      : foundUser.refreshToken.filter(rt => rt !== cookies.jwt);
+
+    if (cookies?.jwt) res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+
     //Save refreshToken with current user
 
-    foundUser.refreshToken = refreshToken;
+    foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     const result = await foundUser.save();
     console.log(result) //Delete before production
 
     //http cookie not accesible by js (for security. More secure than localstorage or another cookie)
     //remove secure: true temporarily if want to test with tunder client. Back in for production
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "None", 
-    secure: true, 
-    maxAge: 24 * 60 * 60 * 1000 })
+    res.cookie('jwt', newRefreshToken, {
+      httpOnly: true, sameSite: "None",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000
+    })
     res.json({ accessToken });
     // res.json({'success': `user ${user} is logged in`});
   } else {
