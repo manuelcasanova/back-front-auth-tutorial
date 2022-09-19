@@ -18,9 +18,9 @@ const handleLogout = async (req, res) => {
   //If we reach this point, we found the same refresh token in db
   //Delete the refresh token in db
 
-foundUser.refreshToken = '';
-const result = await foundUser.save();
-console.log(result); //Delete before production
+  foundUser.refreshToken = foundUser.refreshToken.filter(rt => rt !== refreshToken);
+  const result = await foundUser.save();
+  console.log(result);
 
   res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true}); //secure: true - only serves on https. We would add this on production
   res.sendStatus(204);
