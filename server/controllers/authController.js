@@ -23,7 +23,7 @@ const handleLogin = async (req, res) => {
         }
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10s' } //In production, a few minutes.
+      { expiresIn: '10m' } //In production, a few minutes.
     );
     const refreshToken = jwt.sign(
       { "username": foundUser.username },
@@ -41,7 +41,7 @@ const handleLogin = async (req, res) => {
     res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "None", 
     secure: true, 
     maxAge: 24 * 60 * 60 * 1000 })
-    res.json({ roles, accessToken });
+    res.json({ accessToken });
     // res.json({'success': `user ${user} is logged in`});
   } else {
     res.sendStatus(401);
